@@ -2,9 +2,9 @@ var request = require("request");
 var cheerio = require("cheerio");
 var readlineSync = require('readline-sync');
 
-var downloadImage = require("./downloadImage");
+var downloadImage = require("./downloadImage.js");
 
-const MAXBeautyPage = 2299;
+const MAXBeautyPage = 2295;
 console.log("-----------------------------");
 console.log("|                           |");
 console.log("|  表特圖片爬蟲 ver. 0.0.1  |");
@@ -24,7 +24,6 @@ function getPosts(pageNumber, callback){
 for(var pagePointer = 0; pagePointer< wantPageNumber ; pagePointer++){
   pageNumber = MAXBeautyPage - pagePointer;
   getPosts(pageNumber, function(pageNumber){
-    var post = [];
     request({
       url: "https://www.ptt.cc/bbs/Beauty/index"+pageNumber+".html",
       method: "GET"
@@ -45,6 +44,4 @@ for(var pagePointer = 0; pagePointer< wantPageNumber ; pagePointer++){
       }
     });
   });
-  
 }
-
