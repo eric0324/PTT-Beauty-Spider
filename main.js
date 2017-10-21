@@ -19,21 +19,32 @@ var readline = require('readline');
 //   rl.close();
 // });
 
-request({
-  url: "https://www.ptt.cc/bbs/Beauty/index2294.html",
-  method: "GET"
-}, function(e,r,b) {
-  if(e || !b) 
-  { 
-    console.log("資料擷取錯誤！");
-    return; 
-  }
-  var $ = cheerio.load(b);
-  var result = [];
-  var titles = $(".title a");
-  for(var i=0;i<titles.length;i++) {
-    result.push("https://www.ptt.cc" + $(titles[i]).attr("href"));
-  }
+function getPosts(pageNumber, callback){
+  callback(pageNumber);
+}
 
-  console.log(result);
-});
+getPosts(10, function(pageNumber){
+  var post = [];
+    request({
+      url: "https://www.ptt.cc/bbs/Beauty/index2294.html",
+      method: "GET"
+    }, function(e,r,b) {
+      
+      if(e || !b) 
+      { 
+        console.log("資料擷取錯誤！");
+        return; 
+      }
+      
+      var $ = cheerio.load(b);
+      var titles = $(".title a");
+      for(var i=0;i<titles.length;i++) {
+        post.push("https://www.ptt.cc" + $(titles[i]).attr("href"));
+      }
+      console.log(post);
+      return post;
+    });
+  }
+);
+
+
