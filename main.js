@@ -1,32 +1,25 @@
 var request = require("request");
 var cheerio = require("cheerio");
 var readline = require('readline');
+var fs = require('fs');
+var readlineSync = require('readline-sync');
 
-// var rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout
-// });
+const MAXBeautyPage = 2299;
 
-// var pageNumber;
-// rl.question("要讀幾頁的表特版？ ", function(answer) {
-//   if(answer<1){
-//     console.log("低於一頁，自動設定為讀取一頁！");
-//     pageNumber=1;
-//   }else{
-//     pageNumber=answer;
-//   }
-  
-//   rl.close();
-// });
+// Wait for user's response. 
+var wantPageNumber = readlineSync.question('你要下載最新的幾頁？');
+
 
 function getPosts(pageNumber, callback){
   callback(pageNumber);
 }
 
-getPosts(10, function(pageNumber){
-  var post = [];
+for(var pagePointer = 0; pagePointer< wantPageNumber ; pagePointer++){
+  pageNumber = MAXBeautyPage - pagePointer;
+  getPosts(pageNumber, function(pageNumber){
+    var post = [];
     request({
-      url: "https://www.ptt.cc/bbs/Beauty/index2294.html",
+      url: "https://www.ptt.cc/bbs/Beauty/index"+pageNumber+".html",
       method: "GET"
     }, function(e,r,b) {
       
@@ -39,12 +32,45 @@ getPosts(10, function(pageNumber){
       var $ = cheerio.load(b);
       var titles = $(".title a");
       for(var i=0;i<titles.length;i++) {
-        post.push("https://www.ptt.cc" + $(titles[i]).attr("href"));
+        var path = "https://www.ptt.cc" + $(titles[i]).attr("href");
+        console.log("來源：" + path);
+        getPostImage(path);
       }
-      console.log(post);
-      return post;
     });
-  }
-);
+  });
+  
+}
 
 
+//Function: Download Image 
+var download = function(uri, filename, callback){
+  request.head(uri, function(err, res, body){
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
+
+//Function: Get Post Image 
+function getPostImage(path){
+  request({
+    url: path,
+    method: "GET"
+  }, function(e,r,b) {
+    
+    if(e || !b) 
+    { 
+      console.log("圖片擷取錯誤！");
+      return; 
+    }
+    
+    var $ = cheerio.load(b);
+    var imgPath = $(".richcontent a");
+    for(var i=0 ; i<imgPath.length ;i++) {
+      console.log('下載.....');
+      var str = $(imgPath[i]).attr("href")
+      var res = str.replace("//imgur.com/", "");
+      var newRes = res.replace(res, "https://i.imgur.com/"+res+".jpg");
+      download(newRes, 'download/'+res+'.jpg', function(){
+      });
+    }
+  });
+}
