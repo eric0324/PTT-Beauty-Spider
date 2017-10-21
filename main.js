@@ -5,11 +5,18 @@ var fs = require('fs');
 var readlineSync = require('readline-sync');
 
 const MAXBeautyPage = 2299;
+console.log("----------------------------");
+console.log("|                           |");
+console.log("|  表特圖片爬蟲 ver. 0.0.1    |");
+console.log("|                           |");
+console.log("|  作者：EricWu              |");
+console.log("|                           |");
+console.log("----------------------------");
 
 // Wait for user's response. 
 var wantPageNumber = readlineSync.question('你要下載最新的幾頁？');
 
-
+//GetPostList
 function getPosts(pageNumber, callback){
   callback(pageNumber);
 }
