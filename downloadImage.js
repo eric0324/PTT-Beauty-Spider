@@ -1,6 +1,7 @@
 var request = require("request");
 var cheerio = require("cheerio");
 var fs = require('fs');
+
 //Function: Download Image 
 var download = function(uri, filename, callback){
     request.head(uri, function(err, res, body){
@@ -9,7 +10,7 @@ var download = function(uri, filename, callback){
   };
   
 //Function: Get Post Image 
-function getPostImage(path){
+function getPostImage(path, dir){
     request({
       url: path,
       method: "GET"
@@ -28,7 +29,7 @@ function getPostImage(path){
         var str = $(imgPath[i]).attr("href")
         var res = str.replace("//imgur.com/", "");
         var newRes = res.replace(res, "https://i.imgur.com/"+res+".jpg");
-        download(newRes, 'download/'+res+'.jpg', function(){
+        download(newRes, 'download/'+dir+'_'+res+'.jpg', function(){
         });
       }
     });

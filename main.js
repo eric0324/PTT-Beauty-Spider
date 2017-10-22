@@ -39,8 +39,9 @@ for(var pagePointer = 0; pagePointer< wantPageNumber ; pagePointer++){
       var titles = $(".title a");
       for(var i=0;i<titles.length;i++) {
         var path = "https://www.ptt.cc" + $(titles[i]).attr("href");
+        var dir = $(titles[i]).text();
         console.log("來源：" + path);
-        downloadImage.get(path);
+        downloadImage.get(path, dir);
       }
     });
   });
