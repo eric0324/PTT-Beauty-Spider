@@ -29,7 +29,8 @@ function getPostImage(path, dir){
         var str = $(imgPath[i]).attr("href")
         var res = str.replace("//imgur.com/", "");
         var newRes = res.replace(res, "https://i.imgur.com/"+res+".jpg");
-        download(newRes, 'download/'+dir+'_'+res+'.jpg', function(){
+        var fileName = dir.replace("[正妹]", "");
+        download(newRes, 'download/'+res+'.jpg', function(){
         });
       }
     });
